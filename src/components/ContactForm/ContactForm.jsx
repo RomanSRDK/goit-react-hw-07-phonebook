@@ -1,15 +1,17 @@
 import styles from '../ContactForm/ContactForm.module.css';
-import { useDispatch } from 'react-redux';
-import { addContact } from 'redux/contacts-actions';
+import { useDispatch, useSelector } from 'react-redux';
+// import { nanoid } from 'nanoid';
+import { add } from 'redux/contacts-actions';
+import { getContacts } from '../../redux/contacts-selectors';
 import { useState } from 'react';
 
 const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+  const contacts = useSelector(getContacts);
   const dispatch = useDispatch();
 
-  const handleChanger = ({target}) => {
-    const { name, value } = target;
+  const handleChanger = ({ target: { name, value } }) => {
     switch (name) {
       case 'name':
         setName(value);
@@ -24,14 +26,21 @@ const ContactForm = () => {
 
   const formSubmit = event => {
     event.preventDefault();
-    dispatch(addContact({ name, number }));
+    const isContactExist = contacts.some(
+      item => item.name.toLowerCase() === name.toLowerCase()
+    );
+    if (isContactExist) {
+      alert(`${isContactExist.name} is already in contact`);
+      return;
+    }
+    const contact = { name, number };
+    dispatch(add(contact));
     reset();
   };
-
-  const reset = () => {
+  function reset() {
     setName('');
     setNumber('');
-  };
+  }
 
   return (
     <>

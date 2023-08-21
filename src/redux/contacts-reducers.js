@@ -1,37 +1,30 @@
 import { combineReducers } from 'redux';
 import { createReducer } from '@reduxjs/toolkit';
-import {
-  addContact,
-  deleteContact,
-  contactCheck,
-} from '../redux/contacts-actions';
+import { checkContact, get, add, remove } from './contacts-actions';
 
-const contactsItems = createReducer(
-  [
-    { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-    { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-    { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-  ],
-  {
-    [addContact]: (state, { payload }) => {
-      if (state.find(({ name }) => name === payload.name)) {
-        alert(`Contact ${payload.name} is already exist`);
-        return state;
-      }
-      return [...state, payload];
-    },
+const items = createReducer([], {
+  [get.fulfilled]: (_, { payload }) => payload,
+  [add.fulfilled]: (state, { payload }) => [...state, payload],
 
-    [deleteContact]: (state, { payload }) =>
-      state.filter(item => item.id !== payload),
-  }
-);
+  [remove.fulfilled]: (state, { payload }) =>
+    state.filter(({ id }) => id !== payload),
+});
 
-const contactsFilter = createReducer('', {
-  [contactCheck]: (_, { payload }) => payload,
+const error = createReducer(null, {
+  [get.pending]: () => null,
+  [get.rejected]: (_, { payload }) => payload,
+  [add.pending]: () => null,
+  [add.rejected]: (_, { payload }) => payload,
+  [remove.pending]: () => null,
+  [remove.rejected]: (_, { payload }) => payload,
+});
+
+const filter = createReducer('', {
+  [checkContact]: (_, { payload }) => payload,
 });
 
 export const contactsReducer = combineReducers({
-  items: contactsItems,
-  filter: contactsFilter,
+  items,
+  error,
+  filter,
 });

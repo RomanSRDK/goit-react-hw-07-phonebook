@@ -1,6 +1,5 @@
 import styles from '../ContactForm/ContactForm.module.css';
 import { useDispatch, useSelector } from 'react-redux';
-// import { nanoid } from 'nanoid';
 import { add } from 'redux/contacts-actions';
 import { getContacts } from '../../redux/contacts-selectors';
 import { useState } from 'react';
@@ -33,6 +32,7 @@ const ContactForm = () => {
       alert(`${isContactExist.name} is already in contact`);
       return;
     }
+
     const contact = { name, number };
     dispatch(add(contact));
     reset();

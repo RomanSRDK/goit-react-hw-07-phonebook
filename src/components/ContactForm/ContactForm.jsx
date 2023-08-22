@@ -25,11 +25,12 @@ const ContactForm = () => {
 
   const formSubmit = event => {
     event.preventDefault();
+
     const isContactExist = contacts.some(
       item => item.name.toLowerCase() === name.toLowerCase()
     );
     if (isContactExist) {
-      alert(`${isContactExist.name} is already in contact`);
+      alert(`${name} is already in contact`);
       return;
     }
 
